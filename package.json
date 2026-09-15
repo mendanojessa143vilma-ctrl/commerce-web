@@ -1,0 +1,16 @@
+{
+  "name": "user-management-system",
+  "version": "1.0.0",
+  "description": "Full-stack user and admin management portal with shop",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
+    "express": "^4.22.2",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.1"
+  }
+}

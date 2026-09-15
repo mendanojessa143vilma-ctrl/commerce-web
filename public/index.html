@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechMartX | Modern Electronics & Apparel</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <div class="logo" onclick="switchPage('page-home')">
+        <i class="fa-solid fa-bolt logo-icon"></i> <span>TechMartX</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search product catalog..." onkeyup="searchProducts()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#" class="nav-btn active" data-target="page-home">Home</a></li>
+        <li><a href="#" class="nav-btn" data-target="page-shop">Shop</a></li>
+        <li><a href="#" class="nav-btn" data-target="page-contact">Contact</a></li>
+        <li id="client-account-nav-item" style="display: none;"><a href="#" class="nav-btn account-badge" data-target="page-client-account"><i class="fa-solid fa-user-gear"></i> My Account</a></li>
+        <li id="dashboard-nav-item" style="display: none;"><a href="#" class="nav-btn dash-badge" data-target="page-user-dash"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</a></li>
+        <li id="admin-nav-item" style="display: none;">
+          <a href="#" class="nav-btn dash-badge admin-badge" data-target="page-admin-dash"><i class="fa-solid fa-shield-halved"></i> Admin Panel</a>
+        </li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="auth-btn" id="nav-auth-btn">Login / Sign Up</button>
+        <a href="#" class="cart-icon-wrapper" onclick="toggleCart(true)">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span id="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- App Body Layout -->
+  <div class="app-body">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-title"><i class="fa-solid fa-filter"></i> Categories</div>
+      <ul class="sidebar-menu">
+        <li><a href="#" onclick="filterCategory('all')"><i class="fa-solid fa-border-all"></i> All Products</a></li>
+        <li><a href="#" onclick="filterCategory('t-shirt')"><i class="fa-solid fa-shirt"></i> T-Shirts</a></li>
+        <li><a href="#" onclick="filterCategory('lanyard')"><i class="fa-solid fa-id-badge"></i> Lanyards</a></li>
+        <li><a href="#" onclick="filterCategory('uniform')"><i class="fa-solid fa-user-tie"></i> Uniforms</a></li>
+        <li><a href="#" onclick="filterCategory('laptop')"><i class="fa-solid fa-laptop"></i> Laptops</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="main-viewport">
+
+      <!-- PAGE: HOME -->
+      <section id="page-home" class="page-view active">
+        <div class="modern-hero">
+          <div class="hero-content">
+            <span class="badge-pill pulse-badge"><span class="pulse-dot"></span> Next-Gen Tech Ecosystem</span>
+            <h1 class="hero-title">Upgrade Your <span class="gradient-text">Digital Gear</span></h1>
+            <p class="hero-subtitle">Discover premium apparel, custom lanyards, and high-performance computing hardware built for professionals.</p>
+            <div class="hero-cta-group">
+              <button class="btn-primary-glow hero-btn" onclick="switchPage('page-shop')">Explore Catalog</button>
+              <button class="btn-secondary-glass hero-btn" onclick="viewLaptops()">View Laptops</button>
+            </div>
+            <div class="hero-stats">
+              <div><span class="stat-num">100%</span><span class="stat-label">Authentic</span></div>
+              <div class="stat-divider"></div>
+              <div><span class="stat-num">Fast</span><span class="stat-label">Shipping</span></div>
+              <div class="stat-divider"></div>
+              <div><span class="stat-num">24/7</span><span class="stat-label">Support</span></div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="glass-card float-animation">
+              <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" alt="Featured Product" class="hero-img">
+              <div class="floating-tag price-tag float-tag-1">₱199.00</div>
+              <div class="floating-tag gcash-tag float-tag-2"><i class="fa-solid fa-wallet"></i> GCash Accepted</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card animated-card">
+            <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+            <div><h4>Free Express Delivery</h4><p>On all orders over ₱150</p></div>
+          </div>
+          <div class="feature-card animated-card">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div><h4>Buyer Protection</h4><p>Guaranteed secure checkout</p></div>
+          </div>
+          <div class="feature-card animated-card">
+            <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+            <div><h4>Live Support</h4><p>Dedicated customer helpdesk</p></div>
+          </div>
+        </div>
+
+        <!-- FEATURED PRODUCTS SECTION -->
+        <div class="featured-products-section">
+          <h2>Featured Products</h2>
+          <div id="home-trending-grid" class="product-grid">
+            <!-- Products will be injected here automatically by script.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: SHOP -->
+      <section id="page-shop" class="page-view">
+        <h2 style="margin-bottom: 20px;">Full Merchandise Catalog</h2>
+        <div class="products-grid" id="product-list"></div>
+      </section>
+
+      <!-- PAGE: CONTACT -->
+      <section id="page-contact" class="page-view">
+        <div class="contact-wrapper">
+          <div class="contact-card">
+            <div class="contact-header">
+              <div class="contact-icon"><i class="fa-envelope-open-text fa-solid"></i></div>
+              <h2>Contact Our Team</h2>
+              <p>We are here to assist you with sales, orders, and inquiries.</p>
+            </div>
+            <form class="contact-form">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" placeholder="John Doe" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="john@example.com" required>
+              </div>
+              <div class="form-group">
+                <label>Message</label>
+                <textarea rows="4" placeholder="How can we help you?" required></textarea>
+              </div>
+              <button type="submit" class="btn-buy blue-btn animated-btn">Send Message <i class="fa-paper-plane fa-solid"></i></button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: CLIENT ACCOUNT -->
+      <section id="page-client-account" class="page-view">
+        <div class="client-account-shell">
+          <header class="client-account-heading">
+            <div>
+              <span class="dashboard-kicker"><i class="fa-solid fa-user-circle"></i> Customer center</span>
+              <h2>My Account</h2>
+              <p>Manage your profile, delivery details, payment preference, and orders.</p>
+            </div>
+            <button class="account-shop-button" type="button" onclick="switchPage('page-shop')"><i class="fa-solid fa-store"></i> Continue shopping</button>
+          </header>
+
+          <div class="client-account-grid">
+            <section class="client-card client-profile-card">
+              <div class="client-card-heading"><div><span class="panel-eyebrow">Account details</span><h3>Profile</h3></div><i class="fa-solid fa-id-card client-card-icon"></i></div>
+              <form id="client-profile-form" class="client-form">
+                <div class="client-avatar-editor">
+                  <div class="client-avatar" id="client-avatar-preview"><i class="fa-solid fa-user"></i></div>
+                  <div>
+                    <label for="client-profile-image">Profile photo</label>
+                    <input id="client-profile-image" type="file" accept="image/png,image/jpeg,image/webp">
+                    <small>Use a JPG, PNG, or WEBP image up to 2 MB.</small>
+                  </div>
+                </div>
+                <label for="client-profile-name">Full name</label>
+                <input id="client-profile-name" type="text" required>
+                <label for="client-profile-email">Email address</label>
+                <input id="client-profile-email" type="email" readonly>
+                <label for="client-profile-phone">Contact number</label>
+                <input id="client-profile-phone" type="tel" placeholder="09XX XXX XXXX" maxlength="20">
+                <button class="btn-buy blue-btn" type="submit">Save profile</button>
+              </form>
+            </section>
+
+            <section class="client-card">
+              <div class="client-card-heading"><div><span class="panel-eyebrow">Fulfillment</span><h3>Saved delivery address</h3></div><i class="fa-solid fa-location-dot client-card-icon"></i></div>
+              <form id="client-address-form" class="client-form">
+                <label for="client-address-name">Recipient name</label>
+                <input id="client-address-name" type="text" required>
+                <label for="client-address-line">Address</label>
+                <textarea id="client-address-line" rows="3" placeholder="House number, street, city" required></textarea>
+                <button class="btn-buy blue-btn" type="submit">Save address</button>
+              </form>
+            </section>
+
+            <section class="client-card">
+              <div class="client-card-heading"><div><span class="panel-eyebrow">Checkout</span><h3>Payment preference</h3></div><i class="fa-solid fa-wallet client-card-icon"></i></div>
+              <form id="client-payment-form" class="client-form">
+                <label for="client-default-payment">Default payment method</label>
+                <select id="client-default-payment" class="styled-select">
+                  <option value="gcash">GCash</option>
+                  <option value="card">Credit Card</option>
+                  <option value="cod">Cash on Delivery</option>
+                </select>
+                <div class="client-payment-note"><i class="fa-solid fa-lock"></i> Card details are entered securely during checkout and are never saved here.</div>
+                <button class="btn-buy blue-btn" type="submit">Save preference</button>
+              </form>
+            </section>
+
+            <section class="client-card client-orders-card">
+              <div class="client-card-heading"><div><span class="panel-eyebrow">Order history</span><h3>Track my orders</h3></div><button class="client-refresh-button" type="button" onclick="renderClientOrders()" title="Refresh orders"><i class="fa-solid fa-rotate"></i></button></div>
+              <div id="client-order-list" class="client-order-list"><p class="client-empty-state">Sign in to view your orders.</p></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: USER DASHBOARD -->
+      <section id="page-user-dash" class="page-view">
+        <div class="dashboard-shell">
+          <header class="dashboard-heading">
+            <div>
+              <span class="dashboard-kicker"><i class="fa-solid fa-chart-line"></i> Store operations</span>
+              <h2>My Dashboard</h2>
+              <p>Track revenue, fulfillment, and customer orders from one workspace.</p>
+            </div>
+            <div class="dashboard-account">
+              <span class="dashboard-account-label">Signed in as</span>
+              <strong id="dash-username">Admin</strong>
+              <span id="user-email-display">user@gmail.com</span>
+            </div>
+          </header>
+
+          <section class="dashboard-kpi-grid" aria-label="Business overview">
+            <article class="dashboard-kpi kpi-revenue">
+              <div class="kpi-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+              <div><span>Total sales</span><strong id="user-total-sales">₱0.00</strong><small>Sold, paid, and delivered orders</small></div>
+            </article>
+            <article class="dashboard-kpi kpi-orders">
+              <div class="kpi-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+              <div><span>Total orders</span><strong id="dash-order-count">0</strong><small>Customer purchases</small></div>
+            </article>
+            <article class="dashboard-kpi kpi-attention">
+              <div class="kpi-icon"><i class="fa-solid fa-clock"></i></div>
+              <div><span>Needs attention</span><strong id="dash-pending-count">0</strong><small>Pending or processing</small></div>
+            </article>
+            <article class="dashboard-kpi kpi-average">
+              <div class="kpi-icon"><i class="fa-solid fa-receipt"></i></div>
+              <div><span>Current capital</span><strong id="dash-current-capital">₱0.00</strong><small>Current catalog value</small></div>
+            </article>
+          </section>
+
+          <div class="dashboard-content-grid">
+            <section class="dashboard-panel sales-panel">
+              <div class="panel-heading">
+                <div><span class="panel-eyebrow">Performance</span><h3>Sales overview</h3></div>
+                <span class="panel-period"><i class="fa-regular fa-calendar"></i> Current period</span>
+              </div>
+              <div class="sales-chart-wrap"><canvas id="userSalesChart"></canvas></div>
+            </section>
+
+            <section class="dashboard-panel status-panel">
+              <div class="panel-heading">
+                <div><span class="panel-eyebrow">Fulfillment</span><h3>Order pipeline</h3></div>
+                <i class="fa-solid fa-boxes-stacked panel-heading-icon"></i>
+              </div>
+              <div class="status-summary-list">
+                <button class="status-summary-row" data-filter="pending" type="button"><span><i class="status-dot status-dot-pending"></i>Pending</span><strong id="dash-status-pending">0</strong></button>
+                <button class="status-summary-row" data-filter="processing" type="button"><span><i class="status-dot status-dot-processing"></i>Processing</span><strong id="dash-status-processing">0</strong></button>
+                <button class="status-summary-row" data-filter="packed" type="button"><span><i class="status-dot status-dot-packed"></i>Packed</span><strong id="dash-status-packed">0</strong></button>
+                <button class="status-summary-row" data-filter="out-for-delivery" type="button"><span><i class="status-dot status-dot-transit"></i>Out for delivery</span><strong id="dash-status-out-for-delivery">0</strong></button>
+                <button class="status-summary-row" data-filter="delivered" type="button"><span><i class="status-dot status-dot-delivered"></i>Delivered</span><strong id="dash-status-delivered">0</strong></button>
+              </div>
+              <div class="status-panel-footer"><span>Current balance</span><strong id="user-current-balance">₱0.00</strong></div>
+            </section>
+          </div>
+
+          <section class="dashboard-panel orders-panel">
+            <div class="orders-toolbar">
+              <div><span class="panel-eyebrow">Order management</span><h3>Recent orders</h3></div>
+              <div class="status-filter-group" aria-label="Filter orders by status">
+                <button class="filter-btn active" data-filter="all" type="button">All</button>
+                <button class="filter-btn" data-filter="sold" type="button">Sold</button>
+                <button class="filter-btn" data-filter="paid" type="button">Paid</button>
+                <button class="filter-btn" data-filter="pending" type="button">Pending</button>
+                <button class="filter-btn" data-filter="processing" type="button">Processing</button>
+                <button class="filter-btn" data-filter="packed" type="button">Packed</button>
+                <button class="filter-btn" data-filter="out-for-delivery" type="button">Out for delivery</button>
+                <button class="filter-btn" data-filter="delivered" type="button">Delivered</button>
+                <button class="filter-btn" data-filter="returned" type="button">Returned</button>
+                <button class="filter-btn" data-filter="cancelled" type="button">Cancelled</button>
+              </div>
+            </div>
+            <div class="orders-table-wrap">
+              <table class="tx-table">
+                <thead><tr><th>Order</th><th>Customer / address</th><th>Payment</th><th>Total</th><th>Update status</th></tr></thead>
+                <tbody id="tx-history"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- PAGE: ADMIN PANEL -->
+      <section id="page-admin-dash" class="page-view">
+        <div class="admin-header">
+          <div>
+            <h2 style="font-size:22px;">System Management Console</h2>
+            <p style="font-size:12px; opacity:0.9;">Manage store products, review users, and view store analytics.</p>
+          </div>
+          <span class="role-badge"><i class="fa-solid fa-user-shield"></i> Administrator</span>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-card bg-blue">
+            <h3>Total Inventory</h3>
+            <div class="val" id="admin-inventory-count">0</div>
+            <div class="sub">Active items in database</div>
+          </div>
+          <div class="metric-card bg-blue">
+            <h3>Registered Accounts</h3>
+            <div class="val" id="admin-users-count">0</div>
+            <div class="sub">Active clients & admins</div>
+          </div>
+          <div class="metric-card bg-blue">
+            <h3>Total Orders</h3>
+            <div class="val" id="admin-orders-count">0</div>
+            <div class="sub">Completed transactions</div>
+          </div>
+          <div class="metric-card bg-blue">
+            <h3>System Status</h3>
+            <div class="val">Online</div>
+            <div class="sub">Storage Engine Active</div>
+          </div>
+        </div>
+
+        <div class="admin-crud-section">
+          <div class="admin-crud-header">
+            <h3>Product Inventory Management</h3>
+            <button class="btn-buy blue-btn" style="width:auto; padding:8px 16px;" onclick="openProductModal()"><i class="fa-solid fa-plus"></i> Add Product</button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-product-table"></tbody>
+          </table>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-box">
+            <h4 style="margin-bottom:15px;">Revenue Trend</h4>
+            <canvas id="revenueChart"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4 style="margin-bottom:15px;">Category Share</h4>
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-backdrop" id="cart-backdrop" onclick="toggleCart(false)"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button class="cart-close-btn" onclick="toggleCart(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div style="border-top:1px solid #e2e8f0; padding-top:15px;">
+      <div style="display:flex; justify-content:space-between; font-weight:700; font-size:16px; margin-bottom:15px;">
+        <span>Total:</span>
+        <span>₱<span id="cart-total">0.00</span></span>
+      </div>
+      <button class="btn-buy blue-btn" onclick="openPaymentModal()">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Login/Register Modal -->
+  <div class="modal" id="auth-modal">
+    <div class="modal-content">
+      <h3 id="auth-modal-title">Customer Login</h3>
+      
+      <div class="auth-role-tabs">
+        <button type="button" class="role-tab active" id="tab-user-role" onclick="setAuthRole('user')"><i class="fa-solid fa-user"></i> Customer</button>
+        <button type="button" class="role-tab" id="tab-admin-role" onclick="setAuthRole('admin')"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+      </div>
+
+      <form id="auth-form">
+        <div id="auth-name-group" style="display:none;" class="form-group">
+          <label for="auth-name">Full Name</label>
+          <input type="text" id="auth-name" placeholder="">
+        </div>
+
+        <div class="form-group">
+          <label for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" placeholder="" required>
+        </div>
+
+        <div class="form-group">
+          <label for="auth-pass">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="auth-pass" placeholder="Enter your password" required>
+            <i class="fa-solid fa-eye-slash toggle-password-icon" id="toggle-password-btn" onclick="togglePasswordVisibility()"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-buy blue-btn pay-btn" id="auth-submit-btn" style="margin-top: 15px;">Login</button>
+        <button type="button" class="btn-buy cancel-btn" onclick="closeAuthModal()">Cancel</button>
+        <p class="auth-toggle-text" id="auth-toggle-btn" onclick="toggleAuthMode()">Don't have an account? Sign Up</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="modal" id="logout-modal">
+    <div class="modal-content text-center">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 38px; color: #f59e0b; margin-bottom: 12px;"></i>
+      <h3>Confirm Logout</h3>
+      <p style="margin: 12px 0 20px 0; color: #64748b; font-size: 14px;">Do you want to log out your account?</p>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" class="btn-buy blue-btn" style="margin: 0; background-color: #ef4444;" onclick="confirmLogout()">Yes</button>
+        <button type="button" class="btn-buy cancel-btn" style="margin: 0;" onclick="closeLogoutModal()">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal (Add/Edit) -->
+  <div class="modal" id="product-modal">
+    <div class="modal-content">
+      <h3 id="prod-modal-title">Add Product</h3>
+      <form id="product-form">
+        <input type="hidden" id="prod-id">
+        <label>Product Title</label>
+        <input type="text" id="prod-title" placeholder="e.g. Pro T-Shirt Red" required>
+        <label>Category</label>
+        <select id="prod-category" class="styled-select" required>
+          <option value="t-shirt">t-shirt</option>
+          <option value="lanyard">lanyard</option>
+          <option value="uniform">uniform</option>
+          <option value="laptop">laptop</option>
+        </select>
+        <label>Price (₱)</label>
+        <input type="number" step="0.01" id="prod-price" placeholder="199.00" required>
+        <label>Image URL</label>
+        <input type="url" id="prod-img" placeholder="https://images.unsplash.com/..." required>
+        <button type="submit" class="btn-buy blue-btn pay-btn">Save Product</button>
+        <button type="button" class="btn-buy cancel-btn" onclick="closeProductModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payment & Order Modal -->
+  <div class="modal" id="payment-modal">
+    <div class="modal-content">
+      <h3 id="payment-modal-title">Checkout Order</h3>
+      
+      <!-- Step 1: Shipping & Method Selection -->
+      <form id="checkout-form">
+        <fieldset class="form-section">
+          <legend>Shipping Details</legend>
+          <label>Recipient Name</label>
+          <input type="text" id="ship-name" placeholder="" required>
+          <label>Delivery Address</label>
+          <input type="text" id="ship-address" placeholder="" required>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Payment Method</legend>
+          <div class="payment-selector">
+            <label><input type="radio" name="payMethod" value="gcash" checked onclick="switchPayFields('gcash')"> GCash</label>
+            <label><input type="radio" name="payMethod" value="cod" onclick="switchPayFields('cod')"> Cash on Delivery</label>
+            <label><input type="radio" name="payMethod" value="card" onclick="switchPayFields('card')"> Credit Card</label>
+          </div>
+
+          <!-- GCash Phone Field -->
+          <div id="gcash-fields">
+            <label>GCash Number</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-weight:600; font-size:14px; color:#475569;">+63</span>
+              <input type="tel" id="gcash-phone" placeholder="9171234567" maxlength="10" pattern="[0-9]{10}">
+            </div>
+            <p style="font-size:11px; color:#64748b; margin-top:4px;">Enter your 10-digit GCash mobile number.</p>
+          </div>
+
+          <!-- COD Fields -->
+          <div id="cod-fields" style="display:none;">
+            <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+              <p style="font-size:12px; color:#334155; margin:0;"><i class="fa-solid fa-truck" style="color:#2563eb;"></i> Pay in cash upon delivery. Prepare exact change.</p>
+            </div>
+          </div>
+
+          <!-- Credit Card Fields -->
+          <div id="card-fields" style="display:none;">
+            <label>Card Number</label>
+            <input type="text" id="card-number" maxlength="19" placeholder="1234 5678 9012 3456">
+            <label>Expiry / CVC</label>
+            <div style="display:flex; gap:10px;">
+            <input type="text" id="card-expiry" maxlength="5" placeholder="MM/YY">
+            <input type="text" id="card-cvc" maxlength="4" placeholder="CVC">
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-buy blue-btn pay-btn" id="checkout-submit-btn">Continue to OTP</button>
+        <button type="button" class="btn-buy cancel-btn" onclick="closePaymentModal()">Cancel</button>
+      </form>
+
+      <!-- Step 2: Interactive GCash OTP Verification -->
+      <div id="gcash-otp-step" style="display: none;">
+        <div style="text-align:center; margin-bottom:15px;">
+          <i class="fa-solid fa-shield-halved" style="font-size:36px; color:#2563eb;"></i>
+          <h4 style="margin-top:8px;">GCash Security Verification</h4>
+          <p style="font-size:12px; color:#64748b;">An authentication code was sent to <b id="display-user-phone">+63 9XXXXXXXXX</b>.</p>
+        </div>
+
+        <div style="background:#eff6ff; border:1px dashed #3b82f6; padding:10px; border-radius:8px; text-align:center; margin-bottom:15px;">
+          <span style="font-size:11px; color:#1e40af; text-transform:uppercase; font-weight:600;">Your Verification OTP</span>
+          <div id="generated-otp-display" style="font-size:24px; font-weight:700; letter-spacing:4px; color:#1d4ed8; margin-top:2px;">------</div>
+        </div>
+
+        <form id="otp-verify-form">
+          <label>Enter 6-Digit Code</label>
+          <input type="text" id="user-otp-input" placeholder="Enter code above" maxlength="6" style="text-align:center; font-size:18px; letter-spacing:3px;" required>
+          <button type="submit" class="btn-buy blue-btn pay-btn">Confirm Payment</button>
+          <button type="button" class="btn-buy cancel-btn" onclick="cancelOTPStep()">Back</button>
+        </form>
+      </div>
+
+      <!-- Step 3: Processing Spinner (Dynamic IDs Added for COD/GCash/Card text handling) -->
+      <div id="payment-spinner-step" style="display: none; text-align: center; padding: 30px 10px;">
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 42px; color: #2563eb; margin-bottom: 15px;"></i>
+        <h4 id="spinner-title">Processing Gateway Payment...</h4>
+        <p id="spinner-desc" style="font-size: 13px; color: #64748b; margin-top: 6px;">Communicating with GCash servers. Please wait...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Notification Modal -->
+  <div id="toast-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="text-align: center; max-width: 400px; padding: 20px;">
+      <h3 id="toast-message">Logged out successfully</h3>
+      <button class="btn-buy blue-btn" onclick="closeToastModal()" style="margin-top: 15px;">OK</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
