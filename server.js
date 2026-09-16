@@ -5,6 +5,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Use this single pool for your Aiven cloud database
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -16,7 +17,7 @@ const pool = mysql.createPool({
 
 pool.getConnection()
   .then(connection => {
-    console.log("Database connected successfully!");
+    console.log("Database connected successfully to Aiven cloud!");
     connection.release();
   })
   .catch(err => {
@@ -39,20 +40,8 @@ function parseCurrencyAmount(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-// 1. Setup XAMPP MySQL Pool Connection
-const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '', // Default XAMPP password is empty
-  database: 'techmartx_db',
-  waitForConnections: true,
-  connectionLimit: 10
-});
-
-// Test Database Connection
-db.getConnection()
-  .then(() => console.log('Connected to XAMPP MySQL Database successfully!'))
-  .catch(err => console.error('MySQL connection error:', err.message));
+// NOTE: The old XAMPP `db` pool has been removed completely so it doesn't crash on Render.
+// Make sure your route queries use `pool.query(...)` instead of `pool.query(...)`.
 
 // Authentication Middleware
 const authenticateToken = (req, res, next) => {
@@ -82,7 +71,7 @@ app.post('/api/signup', async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+    const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email.toLowerCase().trim()]);
     if (existing.length > 0) {
       return res.status(400).json({ message: 'Email is already registered.' });
     }
@@ -91,7 +80,7 @@ app.post('/api/signup', async (req, res) => {
     const userRole = 'user';
 
     const sql = 'INSERT INTO users (email, password, full_name, role) VALUES (?, ?, ?, ?)';
-    const [result] = await db.query(sql, [email.toLowerCase().trim(), hashedPassword, nickname || 'User', userRole]);
+    const [result] = await pool.query(sql, [email.toLowerCase().trim(), hashedPassword, nickname || 'User', userRole]);
 
     res.status(201).json({ message: 'User created successfully' });
   } catch (err) {
@@ -104,7 +93,7 @@ app.post('/api/signup', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email.toLowerCase().trim()]);
     if (users.length === 0) return res.status(400).json({ message: 'Invalid email or password.' });
 
     const user = users[0];
@@ -133,7 +122,7 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
     const fullName = String(req.body.full_name || '').trim();
     if (!fullName) return res.status(400).json({ message: 'Full name is required.' });
 
-    await db.query('UPDATE users SET full_name = ? WHERE id = ?', [fullName, req.user.id]);
+    await pool.query('UPDATE users SET full_name = ? WHERE id = ?', [fullName, req.user.id]);
     res.status(200).json({ message: 'Profile updated successfully.', full_name: fullName });
   } catch (err) {
     res.status(500).json({ message: 'Failed to update profile.', error: err.message });
@@ -143,7 +132,7 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
 // 4. Fetch Users
 app.get('/api/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const [users] = await db.query('SELECT id, full_name, email, role FROM users');
+    const [users] = await pool.query('SELECT id, full_name, email, role FROM users');
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch users.', error: err.message });
@@ -153,7 +142,7 @@ app.get('/api/users', authenticateToken, requireAdmin, async (req, res) => {
 // 5. Products Endpoints
 app.get('/api/products', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT id, title, category, price, COALESCE(image_url, img, "") AS img FROM products');
+    const [rows] = await pool.query('SELECT id, title, category, price, COALESCE(image_url, img, "") AS img FROM products');
     res.status(200).json(rows);
   } catch (err) {
     console.error('Error fetching products:', err.message);
@@ -172,7 +161,7 @@ app.post('/api/products', authenticateToken, requireAdmin, async (req, res) => {
       return res.status(400).json({ message: 'Title, category, and price are required.' });
     }
 
-    const [result] = await db.query(
+    const [result] = await pool.query(
       'INSERT INTO products (title, category, price, img, image_url) VALUES (?, ?, ?, ?, ?)',
       [title, category, price, imageUrl, imageUrl]
     );
@@ -189,7 +178,7 @@ app.put('/api/products/:id', authenticateToken, requireAdmin, async (req, res) =
     const { title, category, price, img } = req.body;
     const imageUrl = img || '';
 
-    await db.query(
+    await pool.query(
       'UPDATE products SET title = ?, category = ?, price = ?, img = ?, image_url = ? WHERE id = ?',
       [title, category, price, imageUrl, imageUrl, id]
     );
@@ -203,7 +192,7 @@ app.put('/api/products/:id', authenticateToken, requireAdmin, async (req, res) =
 app.delete('/api/products/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    await db.query('DELETE FROM products WHERE id = ?', [id]);
+    await pool.query('DELETE FROM products WHERE id = ?', [id]);
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (err) {
     console.error('Error deleting product:', err.message);
@@ -215,7 +204,7 @@ app.delete('/api/products/:id', authenticateToken, requireAdmin, async (req, res
 app.get('/api/orders', authenticateToken, async (req, res) => {
   try {
     res.set('Cache-Control', 'no-store');
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       'SELECT id, recipient_name AS title, delivery_address AS address, payment_method AS method, total_amount AS amount, status FROM orders WHERE user_id = ?',
       [req.user.id]
     );
@@ -228,7 +217,7 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
 app.get('/api/orders/all', authenticateToken, requireAdmin, async (req, res) => {
   try {
     res.set('Cache-Control', 'no-store');
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       'SELECT id, recipient_name AS title, delivery_address AS address, payment_method AS method, total_amount AS amount, status FROM orders'
     );
     res.status(200).json(rows);
@@ -249,7 +238,7 @@ console.log('METHOD:', method);
     const recipientName = req.user.full_name || 'User';
     const numericAmount = parseCurrencyAmount(amount);
 
-    const [result] = await db.query(
+    const [result] = await pool.query(
       'INSERT INTO orders (user_id, recipient_name, delivery_address, payment_method, total_amount, status) VALUES (?, ?, ?, ?, ?, ?)',
       [userId, `${recipientName} - ${title}`, address, finalPaymentMethod, numericAmount, status || 'Pending']
     );
@@ -270,7 +259,7 @@ app.patch('/api/orders/:id/status', authenticateToken, requireAdmin, async (req,
       return res.status(400).json({ message: 'Invalid order status.' });
     }
 
-    const [result] = await db.query('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
+    const [result] = await pool.query('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
     if (result.affectedRows === 0) return res.status(404).json({ message: 'Order not found.' });
 
     res.status(200).json({ message: 'Order status updated successfully.' });
