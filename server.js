@@ -14,6 +14,15 @@ const pool = mysql.createPool({
   ssl: { rejectUnauthorized: false } // Required for Aiven cloud connection
 });
 
+pool.getConnection()
+  .then(connection => {
+    console.log("Database connected successfully!");
+    connection.release();
+  })
+  .catch(err => {
+    console.error("MySQL connection error details:", err.message);
+  });
+  
 const app = express();
 app.use(express.json());
 app.use(cors());
